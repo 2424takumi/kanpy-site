@@ -205,9 +205,41 @@
     section { padding: 56px 0; }
     section h2 { font-size: 24px; }
   }
+  /* 招待者バナー (= ?from=handle がある時だけ表示) */
+  .invite-banner {
+    display: none;
+    background: #FFC411;
+    color: #000;
+    padding: 20px 24px;
+    text-align: center;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+  .invite-banner.show { display: block; }
+  .invite-banner .from-handle {
+    display: inline-block;
+    font-weight: 700;
+    font-size: 18px;
+    margin: 4px 0 8px;
+  }
+  .invite-banner .hint {
+    font-size: 12px;
+    opacity: 0.7;
+    margin-top: 8px;
+  }
 </style>
 </head>
 <body>
+
+<!-- 招待バナー (= ?from=handle のときだけ表示) -->
+<div id="invite-banner" class="invite-banner">
+  <div class="container">
+    <div>🎉 友達からの招待</div>
+    <div class="from-handle" id="invite-from"></div>
+    <div>このリンクから kanPai をインストールすると、 招待者に Plus 報酬 (3 人で 1 ヶ月、 5 人で 1 年無料) が届きます。</div>
+    <div class="hint" id="invite-hint">インストール後、 アプリが自動で招待者を認識します</div>
+  </div>
+</div>
 
 <div class="hero">
   <div class="container">
@@ -298,6 +330,61 @@
   </div>
   <p class="copy">© 2026 Kanpy. All rights reserved.</p>
 </footer>
+
+<script>
+  /**
+   * 招待リンク (= ?from=handle) を 受け取った時の処理:
+   *   1) handle を画面に表示 (= 受け取り手が "誰からの招待か" を 認識)
+   *   2) クリップボードに `kanpai-invite:<handle>` をコピー
+   *      → アプリ初回起動時に Clipboard を読んで 自動で招待者として登録
+   * 失敗時は静かに退避 (= ユーザーは普通にダウンロードできる)。
+   */
+  (function () {
+    var params = new URLSearchParams(window.location.search);
+    var from = (params.get('from') || '').trim();
+    if (!from) return;
+
+    // 表示用に sanitize (= 英数字 + _ のみ受け付ける)
+    var clean = from.replace(/[^a-zA-Z0-9_]/g, '').slice(0, 20);
+    if (!clean) return;
+
+    var banner = document.getElementById('invite-banner');
+    var fromEl = document.getElementById('invite-from');
+    var hintEl = document.getElementById('invite-hint');
+    if (fromEl) fromEl.textContent = '@' + clean;
+    if (banner) banner.classList.add('show');
+
+    // クリップボードにコピー (= 同期 / 非同期 両対応で フォールバック)
+    var token = 'kanpai-invite:' + clean;
+    var copyPromise = null;
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        copyPromise = navigator.clipboard.writeText(token);
+      }
+    } catch (e) {
+      copyPromise = null;
+    }
+    if (!copyPromise) {
+      // フォールバック: textarea 経由
+      try {
+        var ta = document.createElement('textarea');
+        ta.value = token;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+      } catch (e) {
+        // 静かに失敗: 受け取り手は アプリで 手入力する経路に倒れる
+        if (hintEl) {
+          hintEl.textContent =
+            'アプリ起動後、 招待者欄に「' + clean + '」 を入力してください';
+        }
+      }
+    }
+  })();
+</script>
 
 </body>
 </html>
