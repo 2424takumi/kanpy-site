@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <title>Kanpy を 開いて います...</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+      background: #0f0f0f;
+      color: #f5f5f5;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      text-align: center;
+    }
+    .card {
+      max-width: 420px;
+    }
+    h1 { font-size: 24px; margin-bottom: 12px; }
+    p { color: #aaa; line-height: 1.6; font-size: 15px; }
+    .accent { color: #FDBD15; font-weight: 600; }
+    a.button {
+      display: inline-block;
+      margin-top: 20px;
+      background: #FDBD15;
+      color: #000;
+      padding: 14px 28px;
+      text-decoration: none;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Kanpy を 開いて います...</h1>
+    <p>アプリ が 自動 で 開かない 場合 は、<br>下 の ボタン を タップ して ください。</p>
+    <a id="deeplink" class="button" href="#">Kanpy を 開く</a>
+  </div>
+  <script>
+    // クエリ パラメータ (= token_hash, type) を そのまま kanpai:// に 引き渡す
+    var params = window.location.search || '';
+    var deeplink = 'kanpai://auth-callback' + params;
+    document.getElementById('deeplink').href = deeplink;
+    // 即時 リダイレクト (= 多く の iOS Safari で アプリ が 開く)
+    setTimeout(function () {
+      window.location.replace(deeplink);
+    }, 100);
+  </script>
+</body>
+</html>
