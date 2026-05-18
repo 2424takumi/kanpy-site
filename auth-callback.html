@@ -48,9 +48,9 @@
     var params = window.location.search || '';
     var deeplink = 'kanpai://auth-callback' + params;
     document.getElementById('deeplink').href = deeplink;
-    // 即時 リダイレクト (= 多く の iOS Safari で アプリ が 開く)
+    // 即時 リダイレクト (= replace より href の 方 が iOS で 安定 する 報告 あり)
     setTimeout(function () {
-      window.location.replace(deeplink);
+      window.location.href = deeplink;
     }, 100);
   </script>
 </body>
