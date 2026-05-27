@@ -2,3 +2,9 @@ title: Kanpy
 description: 友達との乾杯の一瞬を共有する、シンプルな写真アプリ
 theme: minima
 lang: ja
+
+# Universal Links 用 の Apple App Site Association ファイル を 配信 する ため、
+# dotfile ディレクトリ である .well-known を Jekyll の include に追加。
+# Jekyll は デフォルトで dot-prefix の パス を 除外 する ため 明示が必要。
+include:
+  - .well-known

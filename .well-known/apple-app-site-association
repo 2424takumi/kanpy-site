@@ -1,0 +1,16 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["87V4L2QAJ8.com.x2424-takumi.kanpai"],
+        "components": [
+          {
+            "/": "/kanpy-site/",
+            "?": { "u": "?*" },
+            "comment": "Profile invite link with handle (= QR シェアからの起動)"
+          }
+        ]
+      }
+    ]
+  }
+}
